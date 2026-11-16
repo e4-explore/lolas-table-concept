@@ -39,7 +39,16 @@ img{max-width:100%;display:block}
 .ribbon{background:var(--gold);color:var(--ink);font-size:12px;font-weight:700;text-align:center;padding:5px 12px;letter-spacing:.04em}
 
 /* ---------- header + nav ---------- */
-header{position:sticky;top:0;z-index:30;background:var(--teal);color:var(--cream);height:var(--bar)}
+header{position:sticky;top:0;z-index:30;background:transparent;color:var(--cream);height:var(--bar)}
+header::before,header::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;transition:opacity .3s ease}
+header::before{background:var(--teal)}
+header::after{background:linear-gradient(rgba(11,59,58,.92),rgba(11,59,58,0));opacity:0}
+/* home page: nav floats transparent over the hero, then turns solid (and shows Reserve) once the hero Reserve button has scrolled past */
+body.on-home header{margin-bottom:calc(var(--bar)*-1)}
+body.on-home:not(.nav-solid) header::before{opacity:0}
+body.on-home:not(.nav-solid):not(.logo-hide) header::after{opacity:1}
+header .hright .btn{transition:opacity .3s ease,transform .3s ease}
+body.on-home:not(.nav-solid) header .hright .btn{opacity:0;transform:translateY(6px);visibility:hidden;pointer-events:none}
 header .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .logo{font-family:var(--display);font-style:italic;font-weight:600;font-size:24px;text-decoration:none;letter-spacing:-.01em;white-space:nowrap}
 .logo span{color:var(--orange)}
@@ -68,7 +77,7 @@ nav.top a[aria-current=page]{opacity:1;border-color:var(--orange)}
 header .btn{min-height:40px;padding:0 16px;font-size:14px}
 
 /* ---------- hero ---------- */
-.hero{color:var(--cream);position:relative;overflow:hidden;padding:16px 0 52px;
+.hero{color:var(--cream);position:relative;overflow:hidden;padding:76px 0 52px;
   background:linear-gradient(180deg,rgba(11,59,58,.72) 0%,rgba(11,59,58,.9) 70%,var(--teal) 100%),
              url("https://images.squarespace-cdn.com/content/v1/69b214ee37f594685605243d/6ff160ae-5c59-44d9-9861-0a879e8cbfca/IMG_6025.jpg?format=1500w") center/cover no-repeat,var(--teal)}
 .status{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:500;opacity:.9}
@@ -223,7 +232,7 @@ footer .note{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,246,
   body{padding-bottom:0}
   .dock,.burger{display:none}
   nav.top{display:flex}
-  .hero{padding:44px 0 96px}
+  .hero{padding:104px 0 96px}
   .cta .btn{flex:0 0 auto;padding:0 30px}
   .cards{grid-template-columns:1.2fr 1fr}
   .links{grid-template-columns:1fr 1fr}
@@ -711,10 +720,21 @@ if("IntersectionObserver" in window){
   window.addEventListener("scroll",()=>{ const b=heroH1.getBoundingClientRect(); heroVisible = b.top > 60 - b.height*.2; syncLogo(); },{passive:true});
 }
 
+/* nav background + Reserve button: appear once the hero Reserve button has scrolled past */
+const heroBtn = document.querySelector("#v-home .hero .cta .btn.go");
+const setSolid = v=>document.body.classList.toggle("nav-solid", v);
+if("IntersectionObserver" in window){
+  new IntersectionObserver(es=>{ const e=es[0]; setSolid(!e.isIntersecting && e.boundingClientRect.top < 60); },
+    {rootMargin:"-60px 0px 0px 0px"}).observe(heroBtn);
+} else {
+  window.addEventListener("scroll",()=>setSolid(heroBtn.getBoundingClientRect().bottom < 60),{passive:true});
+}
+
 function go(r, fromHash){
   if(!(r in VIEW)) r="";
   const v = VIEW[r];
   onHome = v==="home"; if(onHome) heroVisible = true; syncLogo();
+  document.body.classList.toggle("on-home", onHome);
   document.querySelectorAll(".view").forEach(el=>el.hidden = el.id!=="v-"+v);
   if(v==="menu"){ current=r; gfOnly=false; renderTabs(); renderMenu(); }
   const navKey = r==="cocktails"?"brunch":r;
