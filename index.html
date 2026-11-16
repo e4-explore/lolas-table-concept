@@ -166,6 +166,8 @@ h2.big{font-family:var(--display);font-style:italic;font-weight:600;font-size:cl
 .band p{font-family:var(--display);font-size:clamp(20px,5vw,25px);line-height:1.4;max-width:30ch}
 .band p+p{margin-top:16px}
 .band .btn{margin-top:26px}
+.band h2.kainh{font-size:clamp(56px,17vw,112px);color:var(--teal);margin:8px 0 6px}
+.kainsub{font-size:14px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;margin-bottom:22px}
 .kain{margin-top:34px;font-family:var(--display);font-style:italic;font-weight:600;font-size:clamp(48px,14vw,104px);line-height:.9;color:var(--teal);letter-spacing:-.03em}
 .kain small{display:block;font-family:var(--body);font-style:normal;font-size:14px;letter-spacing:.2em;text-transform:uppercase;margin-top:12px;color:var(--ink)}
 .about{padding:40px 0 0}
@@ -233,6 +235,7 @@ footer .note{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,246,
   .items{grid-template-columns:1fr 1fr;column-gap:56px}
   .band .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:end}
   .band .kain{margin:0;text-align:right}
+  .band .wrap.solo{display:block}
   .about .wrap.split{display:grid;grid-template-columns:420px 1fr;gap:64px;align-items:center}
   .photo{margin:0}
   .values{grid-template-columns:repeat(3,1fr)}
@@ -351,14 +354,14 @@ footer .note{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,246,
   </section>
 
   <div class="band">
-    <div class="wrap">
+    <div class="wrap solo">
       <div>
         <div class="eyebrow">About Lola’s</div>
-        <h2 class="big">from our family<br>to your table</h2>
+        <h2 class="big kainh">Ka-in Tayo!</h2>
+        <div class="kainsub">(Let’s eat!)</div>
         <p>Authentic Filipino dishes, made from scratch and served family-style — meant for sharing, laughing, and enjoying together.</p>
         <a class="btn dark" href="#/about" data-r="about">Read our story</a>
       </div>
-      <div class="kain">Ka-in<br>Tayo!<small>(Let’s eat!)</small></div>
     </div>
   </div>
 </div>
