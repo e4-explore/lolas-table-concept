@@ -256,7 +256,8 @@ footer .note{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,246,
   .hero{padding:76px 0 96px}
   h1{font-size:clamp(64px,19vw,150px)}
   h1 .m{display:none}
-  .lede{max-width:none}
+  .heroText{width:fit-content;max-width:100%}
+  .heroText .lede{width:0;min-width:100%;max-width:none}
   .hsun{width:520px;height:520px;right:-170px;top:-170px}
   footer .cols{grid-template-columns:repeat(3,1fr)}
 }
@@ -314,9 +315,11 @@ footer .note{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,246,
   <div class="hero">
     <svg class="sun hsun" aria-hidden="true"><use href="#sun"/></svg>
     <div class="wrap">
+      <div class="heroText">
       <h1>lola<i>’</i>s <br class="m">table</h1>
       <div class="tag">Asian cookery &amp; cocktails</div>
       <p class="lede">Filipino flavors made from scratch, served <em>family-style</em> in downtown Bargersville.</p>
+      </div>
       <div class="cta">
         <a class="btn go ot" target="_blank" rel="noopener">Reserve a table</a>
         <a class="btn ghost" href="#/menu" data-r="menu">See the menu</a>
