@@ -145,12 +145,15 @@ h2.big{font-family:var(--display);font-style:italic;font-weight:600;font-size:cl
 .menubar{position:sticky;top:var(--bar);z-index:20;background:var(--cream);padding:10px 0 0;margin:0 -20px}
 .tabs{display:flex;gap:6px;padding:0 20px}
 .tab{flex:1;min-height:46px;border-radius:14px 14px 0 0;border:1px solid var(--line);border-bottom:0;background:transparent;font-weight:700;font-size:15px;color:var(--muted)}
-.tab[aria-selected=true]{background:var(--teal);color:var(--cream);border-color:var(--teal)}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 20px;background:var(--teal);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tab[aria-selected=true]{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 20px;background:var(--gold);scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:none;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,246,233,.35);background:transparent;color:var(--cream);font-size:14px;font-weight:500;white-space:nowrap}
-.chip.gf{border-color:var(--gold);color:var(--gold)}
-.chip.gf[aria-pressed=true]{background:var(--gold);color:var(--ink);font-weight:700}
+.chip{flex:none;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(42,26,18,.6);background:transparent;color:var(--ink);font-size:14px;font-weight:500;white-space:nowrap}
+.chip.gf{border:2px solid var(--ink);font-weight:700}
+.chip.gf[aria-pressed=true]{background:var(--ink);color:var(--cream)}
+.menubar :focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.chip:hover{background:rgba(42,26,18,.1)}
+.chip.gf[aria-pressed=true]:hover{background:var(--ink)}
 .msec{padding-top:36px;scroll-margin-top:calc(var(--bar) + 118px)}
 .msec h3{font-family:var(--display);font-style:italic;font-weight:600;font-size:30px;letter-spacing:-.01em}
 .msec .sub{color:var(--muted);font-size:14px;margin-top:2px}
@@ -390,7 +393,7 @@ footer .note{margin-top:28px;padding-top:18px;border-top:1px solid rgba(255,246,
       <div class="tabs" role="tablist" aria-label="Menus" id="tabs"></div>
       <div class="chips" id="chips"></div>
     </div>
-    <div id="list"></div>
+    <div id="list" role="tabpanel" tabindex="-1" aria-live="polite"></div>
     <div class="fine">
       <p>Not all ingredients are listed on the menu. If you have a food allergy, please tell your server.</p>
       <p>This kitchen prepares food with nuts, soy, dairy, sesame, egg, and shellfish.</p>
@@ -656,7 +659,7 @@ const MENU = {
 };
 
 /* ---------- menu rendering ---------- */
-let current = "dinner", gfOnly = false;
+let current = "dinner", gfOnly = false, focusTabAfter = false;
 const tabsEl = document.getElementById("tabs"), chipsEl = document.getElementById("chips"), listEl = document.getElementById("list");
 const BADGE = {gf:["gf","Gluten free"],ses:["ses","Contains sesame oil"]};
 
@@ -664,15 +667,24 @@ function renderTabs(){
   tabsEl.innerHTML = "";
   Object.entries(MENU).forEach(([k,m])=>{
     const b = document.createElement("button");
-    b.className="tab"; b.setAttribute("role","tab"); b.setAttribute("aria-selected",k===current);
+    b.className="tab"; b.id="tab-"+k; b.setAttribute("role","tab"); b.setAttribute("aria-selected",k===current);
+    b.setAttribute("aria-controls","list"); b.tabIndex = k===current?0:-1;
     b.textContent = m.label;
     b.onclick = ()=>go(k);
+    b.onkeydown = e=>{
+      const keys=Object.keys(MENU); let i=keys.indexOf(k);
+      if(e.key==="ArrowRight") i=(i+1)%keys.length;
+      else if(e.key==="ArrowLeft") i=(i-1+keys.length)%keys.length;
+      else if(e.key==="Home") i=0; else if(e.key==="End") i=keys.length-1; else return;
+      e.preventDefault(); focusTabAfter=true; go(keys[i]);
+    };
     tabsEl.appendChild(b);
   });
 }
 function renderMenu(){
   const secs = MENU[current].sections;
   chipsEl.innerHTML = ""; listEl.innerHTML = "";
+  listEl.setAttribute("aria-labelledby","tab-"+current);
   const hasGF = secs.some(s=>s.items.some(i=>(i[3]||[]).includes("gf")));
   if(hasGF){
     const g = document.createElement("button");
@@ -737,7 +749,8 @@ function go(r, fromHash){
   onHome = v==="home"; if(onHome) heroVisible = true; syncLogo();
   document.body.classList.toggle("on-home", onHome);
   document.querySelectorAll(".view").forEach(el=>el.hidden = el.id!=="v-"+v);
-  if(v==="menu"){ current=r; gfOnly=false; renderTabs(); renderMenu(); }
+  if(v==="menu"){ current=r; gfOnly=false; renderTabs(); renderMenu();
+    if(focusTabAfter){ focusTabAfter=false; document.getElementById("tab-"+r).focus(); } }
   const navKey = r==="cocktails"?"brunch":r;
   document.querySelectorAll("nav a[data-r]").forEach(a=>{
     if(a.dataset.r===navKey) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");
