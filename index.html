@@ -143,9 +143,9 @@ h2.big{font-family:var(--display);font-weight:400;text-transform:uppercase;font-
 .hsun{right:-130px;top:-110px;width:300px;height:300px;animation:spin 90s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.hsun{animation:none}}
-.menubar{position:sticky;top:var(--bar);z-index:20;background:var(--cream);padding:10px 0 0;margin:0 -20px}
+.menubar{position:sticky;top:var(--bar);z-index:20;background:var(--teal);padding:10px 0 0;margin:0 -20px}
 .tabs{display:flex;gap:6px;padding:0 20px}
-.tab{flex:1;min-height:46px;border-radius:14px 14px 0 0;border:1px solid var(--line);border-bottom:0;background:transparent;font-weight:700;font-size:15px;color:var(--muted)}
+.tab{flex:1;min-height:46px;border-radius:14px 14px 0 0;border:1px solid rgba(255,246,233,.38);border-bottom:0;background:transparent;font-weight:700;font-size:15px;color:var(--cream)}
 .tab[aria-selected=true]{background:var(--gold);color:var(--ink);border-color:var(--gold)}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:10px 20px;background:var(--gold);scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .chips::-webkit-scrollbar{display:none}
@@ -153,6 +153,7 @@ h2.big{font-family:var(--display);font-weight:400;text-transform:uppercase;font-
 .chip.gf{border:2px solid var(--ink);font-weight:700}
 .chip.gf[aria-pressed=true]{background:var(--ink);color:var(--cream)}
 .menubar :focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.tabs :focus-visible{outline-color:var(--gold)}
 .chip:hover{background:rgba(42,26,18,.1)}
 .chip.gf[aria-pressed=true]:hover{background:var(--ink)}
 .msec{padding-top:36px;scroll-margin-top:calc(var(--bar) + 118px)}
